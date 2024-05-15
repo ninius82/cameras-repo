@@ -1,0 +1,34 @@
+package it.serravalle.cameras_api;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.security.test.context.support.WithMockUser;
+
+import it.serravalle.cameras_api.controller.CameraController;
+import it.serravalle.cameras_api.service.CameraService;
+
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(CameraController.class)
+class CamerasControllerUnitTest {
+
+    @Autowired
+    private MockMvc mvc;
+    
+    @MockBean
+    private CameraService service;
+
+    // ... other methods
+
+    @WithMockUser(value = "serravalle")
+    @Test
+    public void givenAuthRequestOnPrivateService_shouldSucceedWith200() throws Exception {
+        mvc.perform(get("/cameras/all").contentType(MediaType.APPLICATION_JSON))
+          .andExpect(status().isOk());
+    }
+}

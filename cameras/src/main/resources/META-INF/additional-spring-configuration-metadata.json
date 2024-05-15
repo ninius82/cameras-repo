@@ -1,0 +1,42 @@
+{"properties": [
+  {
+    "name": "app.mediaserver.hostname",
+    "type": "java.lang.String",
+    "description": "A description for 'app.mediaserver.hostname'"
+  },
+  {
+    "name": "app.mediaserver.password",
+    "type": "java.lang.String",
+    "description": "A description for 'app.mediaserver.password'"
+  },
+  {
+    "name": "app.mediaserver.user",
+    "type": "java.lang.String",
+    "description": "A description for 'app.mediaserver.user'"
+  },
+  {
+    "name": "aad-client-id",
+    "type": "java.lang.String",
+    "description": "A description for 'aad-client-id'"
+  },
+  {
+    "name": "azure-ad-tenant-id",
+    "type": "java.lang.String",
+    "description": "A description for 'azure-ad-tenant-id'"
+  },
+  {
+    "name": "azure-ad-tenant",
+    "type": "java.lang.String",
+    "description": "A description for 'azure-ad-tenant'"
+  },
+  {
+    "name": "api-aad-client-id",
+    "type": "java.lang.String",
+    "description": "A description for 'api-aad-client-id'"
+  },
+  {
+    "name": "aad-client-secret",
+    "type": "java.lang.String",
+    "description": "A description for 'aad-client-secret'"
+  }
+]}

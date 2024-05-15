@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "api-aad-client-id",
+    "type": "java.lang.String",
+    "description": "'api-aad-client-id' property"
+  },
+  {
+    "name": "azure-ad-tenant-id",
+    "type": "java.lang.String",
+    "description": "'azure-ad-tenant-id' property"
+  },
+  {
+    "name": "api-aad-client-id-uri",
+    "type": "java.lang.String",
+    "description": "A description for 'api-aad-client-id-uri'"
+  }
+]}

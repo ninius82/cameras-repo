@@ -1,0 +1,64 @@
+#Azure Variables
+azure-ad-tenant-id: <tenant-id>
+api-aad-client-id: <client-id>
+api-aad-client-id-uri: https://serravallespa.onmicrosoft.com/<tenant-id>
+
+logging:
+  level:
+      org:
+          springframework:
+             security: DEBUG
+  file:
+      name: ./logs/cameras.log
+      max-size: 5MB
+      total-size-cap: 100MB
+  pattern:
+        file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+  logback:
+    rollingpolicy:
+      file-name-pattern: ./logs/cameras-%d{yyyy-MM-dd}_%i.log.gz
+server:
+  port: 8443
+  servlet:
+      context-path: /api
+  ssl:
+      enabled: true
+      key-alias: <key-alias>
+      key-password: <key-password>
+      key-store: classpath:ssl/wildcard_serravalle_it.jks
+      key-store-password: <keystore-password>
+spring:
+  datasource:
+      username: <datasource-user>
+      password: <datasource-password>
+      driverClassName: org.h2.Driver
+      url: jdbc:h2:file:./h2db/cameras_api
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: false
+  output:
+    ansi:
+      enabled: always
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://sts.windows.net/${azure-ad-tenant-id}/ 
+          #issuer-uri: https://serravallespa.b2clogin.com/tfp/${azure-ad-tenant-id}/b2x_1_cameras_api/v2.0/
+          audiences: api://${api-aad-client-id}
+                    #jwk-set-uri: https://sts.windows.net/common/discovery/v2.0/keys
+
+#azure:
+#    active-directory:
+#        session-stateless: true
+#        enabled: true
+#        tenant-id: ${azure-ad-tenant-id}
+#        #credential:
+#        #    client-id: ${api-aad-client-id}
+#        app-id-uri: ${app-aad-id-uri}
+        

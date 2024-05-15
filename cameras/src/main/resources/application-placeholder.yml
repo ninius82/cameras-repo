@@ -1,0 +1,59 @@
+# Conversion to YAML from Properties formar report
+# Warnings:
+# - The yaml file had comments which are lost in the refactoring!
+
+#Azure Variables
+azure-ad-tenant: <tenant>.onmicrosoft.com
+azure-ad-tenant-id: <tenant-id>
+aad-client-id: <client-id>
+api-aad-client-id: <api-client-id>
+aad-client-secret: <client-secret>
+
+
+app:
+  mediaserver:
+    hostname: https://ede.serravalle.it
+    user: <user>
+    password: <password>
+
+spring:
+  output:
+    ansi:
+      enabled: always
+  security:
+    oauth2:
+      client:
+        provider:
+          azure:
+            token-uri: https://login.microsoftonline.com/${azure-ad-tenant}/oauth2/v2.0/token
+        registration:
+          azure:
+            client-id: ${aad-client-id}
+            client-secret: ${aad-client-secret}
+            authorization-grant-type: client_credentials
+            scope: api://${api-aad-client-id}/.default
+logging:
+  level:
+      org:
+          springframework:
+             security: DEBUG
+  file:
+      name: ./logs/cameras.log
+      max-size: 5MB
+      total-size-cap: 100MB
+  pattern:
+        file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+  logback:
+    rollingpolicy:
+      file-name-pattern: ./logs/cameras-%d{yyyy-MM-dd}_%i.log.gz
+
+server:
+  port: 443
+  servlet:
+    context-path: /
+  ssl:
+    enabled: true
+    key-store: classpath:ssl/wildcard_serravalle_it.jks
+    key-store-password: <keystore-password>
+    key-alias: <key-alias>
+    key-password: <key-alias>
