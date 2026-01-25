@@ -1,6 +1,7 @@
 package it.serravalle.cameras_api.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,21 +28,17 @@ public class CameraServiceImpl implements CameraService {
 	public List<Camera> findAll() {
 		log.info("Retrieving all cameras");
 		return cameraRepository.findAll();
-
 	}
 
 	@Transactional(readOnly = true)
 	@Override
 	public Camera findById(String id) {
 		log.info("Retrieving camera {}", id);
-		try {
-			return cameraRepository.findById(id).get();
-		} catch (Exception e) {
-			log.error("Camera {} not found", id);
-			throw new CameraNotFoundException(id);
-			// TODO: handle exception
-		}
-
+		return cameraRepository.findById(id)
+				.orElseThrow(() -> {
+					log.error("Camera {} not found", id);
+					return new CameraNotFoundException(id);
+				});
 	}
 
 	@Override
@@ -51,92 +48,56 @@ public class CameraServiceImpl implements CameraService {
 		try {
 			return cameraRepository.save(camera);
 		} catch (Exception e) {
-			log.error("Could not save the camera in the database");
+			log.error("Could not save the camera in the database: {}", e.getMessage());
 			throw new CameraSavingException();
-			// TODO: handle exception
 		}
-
 	}
 
-	/*
-	 * To update the value a property: - validate that the new value is not null nor
-	 * empty. - validate that the new value is not the same as the old value to be
-	 * replaced. - If the values are the same, skip the operation.
-	 */
 	@Override
 	@Transactional
 	public Camera delete(String id) {
 		log.info("Deleting camera {}", id);
-		try {
-			Camera camera = findById(id);
-			cameraRepository.delete(camera);
-			return camera;
-		} catch (Exception e) {
-			log.error("Camera {} not found", id);
-			throw new CameraNotFoundException(id);
-			// TODO: handle exception
-		}
+		Camera camera = findById(id);
+		cameraRepository.delete(camera);
+		return camera;
 	}
 
 	@Override
 	@Transactional
 	public Camera update(String id, String tratta, String km, String direzione, Double lon, Double lat, String descrizione) {
-		log.info("Updateing camera {}", id);
-		Camera camera = null;
+		log.info("Updating camera {}", id);
 
-		try {
-			
-			camera = findById(id);
-			
-			boolean emptyTratta = tratta == null || tratta.length() < 1;
-			
-			boolean emptyKm = km == null || km.length() < 1;
-			
-			boolean emptyDirezione = direzione == null || direzione.length() < 1;
-			
-			boolean validLon = lon != null && (lon.compareTo((double) 0) > 0);
-			
-			boolean validLat = lat != null && (lat.compareTo((double) 0) > 0);
-			
-			boolean emptyDescrizione = descrizione == null || descrizione.length() < 1;
-			
+		Camera camera = findById(id);
 
-			if (!emptyTratta && !camera.getTratta().equals(tratta)) {
+		updateIfChanged(tratta, camera.getTratta(), camera::setTratta);
+		updateIfChanged(km, camera.getKm(), camera::setKm);
+		updateIfChanged(direzione, camera.getDirezione(), camera::setDirezione);
+		updateIfChanged(descrizione, camera.getDescrizione(), camera::setDescrizione);
 
-				camera.setTratta(tratta);
-
-			}
-
-			if (!emptyKm && !camera.getKm().equals(km)) {
-				camera.setKm(km);
-			}
-
-			if (!emptyDirezione && !camera.getDirezione().equals(direzione)) {
-				camera.setDirezione(direzione);
-			}
-			
-			if (!emptyDescrizione && !camera.getDescrizione().equals(descrizione)) {
-				camera.setDescrizione(descrizione);
-			}
-			
-			if (validLon) {
-				camera.setLon(lon);
-			}
-
-			if (validLat) {
-				camera.setLat(lat);
-			}
-			
-			cameraRepository.save(camera);
-			log.info("Camera {} correctly updated", id);
-
-		} catch (Exception e) {
-			throw new CameraNotFoundException(id);
-			// TODO: handle exception
+		if (isValidCoordinate(lon)) {
+			camera.setLon(lon);
+		}
+		if (isValidCoordinate(lat)) {
+			camera.setLat(lat);
 		}
 
+		cameraRepository.save(camera);
+		log.info("Camera {} correctly updated", id);
 		return camera;
+	}
 
+	private void updateIfChanged(String newValue, String currentValue, java.util.function.Consumer<String> setter) {
+		if (hasText(newValue) && !Objects.equals(newValue, currentValue)) {
+			setter.accept(newValue);
+		}
+	}
+
+	private boolean hasText(String value) {
+		return value != null && !value.isEmpty();
+	}
+
+	private boolean isValidCoordinate(Double value) {
+		return value != null && value > 0;
 	}
 
 }

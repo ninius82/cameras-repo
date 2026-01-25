@@ -61,21 +61,18 @@ public class MetadataController {
 
 	@GetMapping("/all")
 	@ResponseBody
-	public Mono<Camera> getAllCameraMetadata(@PathVariable("camera") final String camera) 
-			throws IOException {	
+	public Mono<Camera> getAllCameraMetadata() {
 		try {
-			logger.info("Call get api {}", camera);
-			return  webClient
-		            .get()
-		            .uri("https://ede.serravalle.it:8443/api/oauth2/cameras/all", camera)
-		            .retrieve()
-		        .bodyToMono(Camera.class);
+			logger.info("Call get all cameras api");
+			return webClient
+					.get()
+					.uri("https://ede.serravalle.it:8443/api/oauth2/cameras/all")
+					.retrieve()
+					.bodyToMono(Camera.class);
 		} catch (Exception e) {
 			logger.error("Error {}", e.getMessage());
-			// return null;
 			return new ResponseEntity<Mono<Camera>>(HttpStatus.BAD_REQUEST).getBody();
 		}
-
 	}
 	
 }
