@@ -18,9 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -46,10 +45,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			throw new UsernameNotFoundException(message);
 		} else {
 			log.info("User found in the database: {}", username);
-			Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-			user.getRoles().forEach(role -> {
-				authorities.add(new SimpleGrantedAuthority(role.getName()));
-			});
+			List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
+					.map(role -> new SimpleGrantedAuthority(role.getName()))
+					.collect(Collectors.toList());
 			return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
 					authorities);
 		}

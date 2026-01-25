@@ -1,27 +1,21 @@
 package it.serravalle.cameras.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class MediaClient {
-	
-	
-	@Autowired
-	private MediaServer mediaServer;
-	
-	private WebClient client;
 
+	private final MediaServer mediaServer;
 
-	public WebClient getClient() {
-		return client;
+	public MediaClient(MediaServer mediaServer) {
+		this.mediaServer = mediaServer;
 	}
 
-
-	@Autowired
-	public void setClient() {
-		this.client = WebClient.builder()
+	@Bean(name = "mediaWebClient")
+	public WebClient mediaWebClient() {
+		return WebClient.builder()
 				.baseUrl(mediaServer.getHostname())
 				.defaultHeaders(header -> header.setBasicAuth(mediaServer.getUser(), mediaServer.getPassword()))
 				.build();
