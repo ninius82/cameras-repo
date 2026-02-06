@@ -1,11 +1,8 @@
 package it.serravalle.cameras.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,11 +21,8 @@ import org.apache.logging.log4j.Logger;
 public class MediaController {
 
 	private static final Logger logger = LogManager.getLogger(MediaController.class);
-	private static final int BUFFER_SIZE = 4096;
-
 	private final WebClient mediaWebClient;
 
-	@Autowired
 	public MediaController(@Qualifier("mediaWebClient") WebClient mediaWebClient) {
 		this.mediaWebClient = mediaWebClient;
 	}

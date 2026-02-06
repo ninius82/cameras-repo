@@ -1,7 +1,6 @@
 package it.serravalle.cameras_api.data.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import jakarta.persistence.Column;
